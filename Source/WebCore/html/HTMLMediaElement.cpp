@@ -935,7 +935,7 @@ void HTMLMediaElement::didAttachRenderers()
         if (m_mediaSession && m_mediaSession->wantsToObserveViewportVisibilityForAutoplay())
             renderer->registerForVisibleInViewportCallback();
     }
-    updateShouldAutoplay();
+    scheduleUpdateShouldAutoplay();
 }
 
 void HTMLMediaElement::willDetachRenderers()
@@ -946,7 +946,7 @@ void HTMLMediaElement::willDetachRenderers()
 
 void HTMLMediaElement::didDetachRenderers()
 {
-    updateShouldAutoplay();
+    scheduleUpdateShouldAutoplay();
 }
 
 void HTMLMediaElement::didRecalcStyle(Style::Change)
@@ -4746,7 +4746,7 @@ void HTMLMediaElement::layoutSizeChanged()
 
 void HTMLMediaElement::visibilityDidChange()
 {
-    updateShouldAutoplay();
+    scheduleUpdateShouldAutoplay();
 }
 
 void HTMLMediaElement::setSelectedTextTrack(TextTrack* trackToSelect)
@@ -5830,6 +5830,7 @@ void HTMLMediaElement::cancelPendingTasks()
     m_resumeTaskCancellationGroup.cancel();
     m_seekTaskCancellationGroup.cancel();
     m_playbackControlsManagerBehaviorRestrictionsTaskCancellationGroup.cancel();
+    m_updateShouldAutoplayTaskCancellationGroup.cancel();
 #if !HAVE(MEDIA_VOLUME_PER_ELEMENT)
     m_volumeRevertTaskCancellationGroup.cancel();
 #endif
@@ -8411,6 +8412,16 @@ void HTMLMediaElement::isVisibleInViewportChanged()
         mediaSession().isVisibleInViewportChanged();
         updateShouldAutoplay();
         schedulePlaybackControlsManagerUpdate();
+    });
+}
+
+void HTMLMediaElement::scheduleUpdateShouldAutoplay()
+{
+    if (m_updateShouldAutoplayTaskCancellationGroup.hasPendingTask())
+        return;
+
+    queueCancellableTaskKeepingObjectAlive(*this, TaskSource::MediaElement, m_updateShouldAutoplayTaskCancellationGroup, [this] () {
+        updateShouldAutoplay();
     });
 }
 
