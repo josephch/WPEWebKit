@@ -435,6 +435,8 @@ protected:
     void incrementDecodedVideoFramesCount() { m_decodedVideoFrames++; }
     uint64_t decodedVideoFramesCount() const { return m_decodedVideoFrames; }
 
+    bool updateVideoSinkStatistics();
+
 private:
     class TaskAtMediaTimeScheduler {
     public:
