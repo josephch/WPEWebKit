@@ -760,6 +760,21 @@ GstClockTime webkitGstElementGetCurrentRunningTime(GstElement* element)
 }
 #endif
 
+static bool gstObjectHasProperty(GstObject* gstObject, const char* name)
+{
+    return g_object_class_find_property(G_OBJECT_GET_CLASS(gstObject), name);
 }
+
+bool gstObjectHasProperty(GstElement* element, const char* name)
+{
+    return gstObjectHasProperty(GST_OBJECT_CAST(element), name);
+}
+
+bool gstObjectHasProperty(GstPad* pad, const char* name)
+{
+    return gstObjectHasProperty(GST_OBJECT_CAST(pad), name);
+}
+
+} // namespace WebCore
 
 #endif // USE(GSTREAMER)

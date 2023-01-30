@@ -339,7 +339,10 @@ GstClockTime webkitGstElementGetCurrentRunningTime(GstElement*);
 #define gst_element_get_current_running_time webkitGstElementGetCurrentRunningTime
 #endif
 
-}
+bool gstObjectHasProperty(GstElement*, const char* name);
+bool gstObjectHasProperty(GstPad*, const char* name);
+
+} // namespace WebCore
 
 #ifndef GST_BUFFER_DTS_OR_PTS
 #define GST_BUFFER_DTS_OR_PTS(buffer) (GST_BUFFER_DTS_IS_VALID(buffer) ? GST_BUFFER_DTS(buffer) : GST_BUFFER_PTS(buffer))
