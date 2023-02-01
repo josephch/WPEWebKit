@@ -290,7 +290,7 @@ static inline void fillRTCCandidatePairStats(RTCStatsReport::IceCandidatePairSta
 
     // FIXME
     // stats.transportId =
-    // stats.state =
+    stats.state = RTCStatsReport::IceCandidatePairState::Succeeded;
     // stats.priority =
     // stats.nominated =
     // stats.writable =
